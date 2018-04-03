@@ -3,6 +3,7 @@ from goodreads.user import GoodreadsUser
 import os
 import math
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 class DataRepository():
     client = MongoClient('localhost', 27017)
@@ -12,6 +13,10 @@ class DataRepository():
         self.user_start_id=user_start_id
     def get_users(self):
         return list(self.db['user'].find())
+    def get_user_by_id(self,id):
+        return self.db['user'].find_one({"_id" : id})
+    def get_book_by_id(self,id):
+        return self.db['books'].find_one({"_id" : id})
 
     def scrape_books(self):
         gc = client.GoodreadsClient(os.environ['goodreads_key'],os.environ['goodreads_secret'])
