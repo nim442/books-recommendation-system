@@ -3,8 +3,11 @@ from setup import calculate_knn,calculate_mean_books
 from bson.json_util import dumps
 from DataRepository import DataRepository
 from bson.objectid import ObjectId
+from flask_cors import CORS
+
 from flask import g
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/")
 def hello():
@@ -19,8 +22,8 @@ def get_knn():
     users={}
     for idx in indices[0]:
         users[str(idx)]=dr.get_user_by_id(ObjectId(df_matrix.index[idx]))
-
-    response={"books":book_means,"distance":distance[0].tolist(),"indices":indices[0].tolist(),"users":users}
+    
+    response={"books":book_means[0:10],"distance":distance[0].tolist(),"indices":indices[0].tolist(),"users":users}
     return dumps(response)
 
 @app.route("/update_neigbors")
