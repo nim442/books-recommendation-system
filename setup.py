@@ -8,27 +8,33 @@ os.environ["goodreads_secret"]='dUcc6K7WEos3Vyq2A2JkYX1iHMCuR8UK0cCFvZK1kc'
 
 os.environ["access_token"]='kLeEvIkRdHHTBwQbB4U5mg'
 os.environ["access_secret"]='EWBJSKBwlGJ59pLWgT8FRUCYzGyjSE1WYGgvhi4'
-user_id="5ac14bfa819db688f999d5aa"
+user_id="5ac14dd4819db688f999e243"
 from DataRepository import DataRepository
-dr=DataRepository(9616934)
-users=dr.get_users()
-flat_users=[]
-for user in users:
-    if 'reviews' in user:
-        for review in user['reviews']:
-            flat_users.append({
-                "user_id":user["_id"],
-                "book_id":review["book_id"],
-                "rating":review["rating"]
-            })
-df=pd.DataFrame(flat_users)
-df_matrix=df.pivot('user_id','book_id','rating').fillna(0)
-index=df_matrix.index.get_loc(ObjectId(user_id))
-csr=csr_matrix(df_matrix.values)
-from sklearn.neighbors import NearestNeighbors
-model_knn=NearestNeighbors(metric='cosine',algorithm='brute')
-model_knn.fit(csr)
-distance,indices=model_knn.kneighbors(df_matrix.iloc[index , :].reshape(1,-1),n_neighbors=10)
+
+dr = DataRepository(9616934)
+def calculate_knn():
+    try:
+        df_matrix = pd.read_pickle("df_matrix")
+    except:
+        users = dr.get_users()
+        flat_users = []
+        for user in users:
+            if 'reviews' in user:
+                for review in user['reviews']:
+                    flat_users.append({
+                        "user_id": user["_id"],
+                        "book_id": review["book_id"],
+                        "rating": review["rating"]
+                    })
+        df = pd.DataFrame(flat_users)
+        df_matrix = df.pivot('user_id', 'book_id', 'rating').fillna(0)
+    index = df_matrix.index.get_loc(ObjectId(user_id))
+    csr = csr_matrix(df_matrix.values)
+    from sklearn.neighbors import NearestNeighbors
+    model_knn = NearestNeighbors(metric='cosine', algorithm='brute')
+    model_knn.fit(csr)
+    distance, indices = model_knn.kneighbors(df_matrix.iloc[index, :].reshape(1, -1), n_neighbors=10)
+    return df_matrix,distance,indices
 
 def calculate_mean_books(df_matrix,distance,indices):
     user_books=[]
@@ -69,11 +75,13 @@ def calculate_mean_books(df_matrix,distance,indices):
     book_means=[b for b in book_means if b[0]['title'] not in exist_books]
 
 
-    with open("Output2.txt", "w") as text_file:
-        for b_m in book_means:
-            text_file.write("%s"%b_m[0]['title'])
-            text_file.write("\n")
+    return book_means
+    # with open("Output.txt", "w") as text_file:
+    #     for b_m in book_means:
+    #         text_file.write("%s"%b_m[0]['title'])
+    #         text_file.write("\n")
 
-calculate_mean_books(df_matrix,distance,indices)
+
+
 
 

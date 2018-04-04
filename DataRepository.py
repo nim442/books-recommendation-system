@@ -9,7 +9,7 @@ class DataRepository():
     client = MongoClient('localhost', 27017)
     db = client['Goodreads_Dataset']
 
-    def __init__(self,user_start_id):
+    def __init__(self,user_start_id=None):
         self.user_start_id=user_start_id
     def get_users(self):
         return list(self.db['user'].find())

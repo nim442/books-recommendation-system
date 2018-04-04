@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+.content{
+    display: flex;
+    width: 90%;
+    background: white;
+    margin: auto;
+    margin-top: -150px;
+    height: 549px;
+    box-shadow: 0px 7px 20px 2px #cacaca;
+        flex-flow: column;
+}
+.books {
+    border-bottom: 1.5px solid #f2f2f2;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 0px 53px;
+}
+.book {
+    margin: 15px;
+}
+.book img{
+  width: 98px;
+    height: 147px;
+    margin-top: -41px;
+    box-shadow: 3px 4px 19px 2px #c5c5c5;
+}
+.book .title{
+  display: flex
+}
+div#graph {
+    width: 100%;
+}
+h4 {
+    /* margin: 10px 0px; */
+       font-size: 13px;
+    color: #626262;
+    margin-bottom: 6px;
+} 
+p {
+    color: #bbbbbb;
+    font-size: 12px;
+    margin: 0px;
+}
